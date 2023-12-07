@@ -42,7 +42,7 @@
         </div>
         <div class="form-group">
             <span>User Location</span>
-            <input readonly type="text" id="userLatLog" name="lname" />
+            <input type="text" id="userLatLog" name="lname" />
             <button type="button" onclick="test()">Submit</button>
         </div>
     </div>
@@ -59,14 +59,14 @@ console.log(navigator.userAgent);
 //    alert("For better accuracy, please use Microsoft Edge browser for location services.");
 //}
 
-// Target location coordinates
+
 const targetLat = 13.816200603677094;
 const targetLng = 100.4839606564373;
 
-// Set target location in the input field
+
 targetLatLon.value = `${targetLat} ${targetLng}`;
 
-// Earth's radius in meters (assuming spherical Earth)
+
 const earthRadius = 6371000;
 
 // Geolocation options
@@ -76,7 +76,7 @@ const options = {
     maximumAge: 10000,
 };
 
-// Function to handle successful geolocation
+
 function success(position) {
     const { latitude, longitude, accuracy } = position.coords;
     map.innerHTML = `<iframe width="1200" height="900" src="https://maps.google.com/maps?q=${latitude},${longitude}&amp;z=15&amp;output=embed"></iframe>`;
@@ -93,12 +93,10 @@ function success(position) {
     );
 }
 
-// Function to handle geolocation errors
 function error(err) {
     console.error(`Error getting location: ${err.message}`);
 }
 
-// Function to check if a location is within a specified radius
 function isWithinRadius(userLat, userLng, accuracy) {
     const userLatRad = (Math.PI * userLat) / 180;
     const userLngRad = (Math.PI * userLng) / 180;
@@ -117,7 +115,7 @@ function isWithinRadius(userLat, userLng, accuracy) {
     return distance <= accuracy;
 }
 
-// Function to get the user's location
+
 function getLocation(desiredAccuracy) {
     if (desiredAccuracy && typeof desiredAccuracy === "number") {
         options.maximumAge = 0;
@@ -132,7 +130,7 @@ function getLocation(desiredAccuracy) {
 }
 
 function test() {
-    // Call the main function without specifying accuracy for most accurate location
+    userLatLog.value = '';
     getLocation();
 }
 </script>
