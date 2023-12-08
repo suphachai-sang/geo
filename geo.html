@@ -41,7 +41,13 @@
         </div>
         <div class="form-group">
             <span>Target Location</span>
-            <input type="text" id="targetLatLon" name="lname" />
+            <select name="lname" id="targetLatLon">
+                <option value="13.74344 100.54782">13.74344 100.54782 - Tcap Office</option>
+                <option value="13.816226, 100.483933">13.74344 100.54782 -Home</option>
+                <option value="13.816263, 100.483466">13.74344 100.54782 -Garden</option>
+                <option value="13.73293 100.56091">13.73293 100.56091 - Column NTTData</option>
+              </select>
+
         </div>
         <div class="form-group">
             <span>User Location</span>
@@ -63,11 +69,11 @@ console.log(navigator.userAgent);
 //}
 
 
-const targetLat = 13.816202;
-const targetLng = 100.483844;
+const targetLat = '';
+const targetLng = '';
 
 
-targetLatLon.value = `${targetLat} ${targetLng}`;
+//targetLatLon.value = `${targetLat} ${targetLng}`;
 
 
 const earthRadius = 6371000;
