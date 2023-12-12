@@ -39,11 +39,11 @@
     V1
     <div class="form-container">
         <div class="form-group">
-            <span>Target Location</span>
+            <span>TCAP Office</span>
             <input type="text" id="targetLatLon" name="lname" />
         </div>
         <div class="form-group">
-            <span>User Location</span>
+            <span>Current Location</span>
             <input readonly type="text" id="userLatLog" name="lname" />
             <button type="button" onclick="test()">Submit</button>
         </div>
@@ -92,8 +92,8 @@ function success(position) {
     
     alert(
         inRange
-            ? "Congratulations! Your location is within the target radius."
-            : "Unfortunately, your location is not within the target radius."
+            ? "ํYes!, Your location is within the target radius."
+            : "No!, your location is not within the target radius."
     );
 }
 
@@ -135,8 +135,6 @@ function getLocation(desiredAccuracy) {
 }
 
 function test() {
-    //userLatLog.value = '';
     getLocation();
-    //userLatLog.value = '';
 }
 </script>
