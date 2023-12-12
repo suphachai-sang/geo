@@ -11,7 +11,7 @@
         }
 
         input {
-            width: 90%; 
+            width: 100%; 
             padding: 4px;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -41,12 +41,7 @@
         </div>
         <div class="form-group">
             <span>Target Location</span>
-            <select name="lname" id="targetLatLon">
-                <option value="13.74344 100.54782">13.74344 100.54782 - Tcap Office</option>
-                <option value="13.816226, 100.483933">13.74344 100.54782 -Home</option>
-                <option value="13.816263, 100.483466">13.74344 100.54782 -Garden</option>
-                <option value="13.73293 100.56091">13.73293 100.56091 - Column NTTData</option>
-              </select>
+            <input type="text" id="targetLatLon" name="lname" />
 
         </div>
         <div class="form-group">
@@ -68,12 +63,9 @@ console.log(navigator.userAgent);
 //    alert("For better accuracy, please use Microsoft Edge browser for location services.");
 //}
 
-
-const targetLat = '';
-const targetLng = '';
-
-
-//targetLatLon.value = `${targetLat} ${targetLng}`;
+const targetLat = 13.743462465422091;
+const targetLng = 100.54782095085046;
+targetLatLon.value = `${targetLat} ${targetLng}`;
 
 
 const earthRadius = 6371000;
@@ -97,8 +89,8 @@ function success(position) {
     
     alert(
         inRange
-            ? "Congratulations! Your location is within the target radius."
-            : "Unfortunately, your location is not within the target radius."
+            ? "Yes! Your location is within the target radius."
+            : "No, your location is not within the target radius."
     );
 }
 
