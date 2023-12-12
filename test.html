@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+    
+        span {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input {
+            width: 40%; 
+            padding: 4px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 14px0px;
+        }
+
+        button {
+            padding: 4px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <title>Geolocation</title>
+</head>
+<body>
+    <label id="lbltipAddedComment"></label>
+    <button type="button" onclick="test()">Submit</button>
+</body>
+</html>
+
+<script>
+function test() {
+    //alert('test');
+    
+    document.getElementById('lbltipAddedComment').innerHTML = 'Your tip has been submitted!';
+}
+</script>
