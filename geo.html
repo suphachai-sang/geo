@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +12,7 @@
         }
 
         input {
-            width: 100%; 
+            width: 80%; 
             padding: 4px;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -35,57 +36,59 @@
     <title>Geolocation</title>
 </head>
 <body>
+    V1
     <div class="form-container">
-        <div class="form-group">
-            <span>V 7</span>
-        </div>
         <div class="form-group">
             <span>Target Location</span>
             <input type="text" id="targetLatLon" name="lname" />
-
         </div>
         <div class="form-group">
             <span>User Location</span>
-            <input type="text" id="userLatLog" name="lname" />
+            <input readonly type="text" id="userLatLog" name="lname" />
             <button type="button" onclick="test()">Submit</button>
         </div>
+    </div>
+    <div class="form-group">
+        <label id="infollac"></label> <br/>
+    </div>
+    <div class="form-group">
+        <label id="inforange"></label><br/>
+    </div>
+    <div class="form-group">
+        <label id="infodis"></label><br/>
     </div>
     <div id="map"></div>
 </body>
 </html>
 
 <script>
-// Log user agent information
+
 console.log(navigator.userAgent);
 
-// Check if the browser is Microsoft Edge
-//if (!navigator.userAgent.includes("Edge" || "Edg")) {
-//    alert("For better accuracy, please use Microsoft Edge browser for location services.");
-//}
+// Target location coordinates
+const targetLat = 13.743462465422091;
+const targetLng = 100.54782095085046;
 
-//const targetLat = 13.743462465422091;
-//const targetLng = 100.54782095085046;
 targetLatLon.value = `${targetLat} ${targetLng}`;
-
 
 const earthRadius = 6371000;
 
-// Geolocation options
+
 const options = {
     enableHighAccuracy: true,
     timeout: 5000,
     maximumAge: 10000,
 };
 
-
 function success(position) {
     const { latitude, longitude, accuracy } = position.coords;
     map.innerHTML = `<iframe width="1200" height="900" src="https://maps.google.com/maps?q=${latitude},${longitude}&amp;z=15&amp;output=embed"></iframe>`;
     userLatLog.value = `${latitude} ${longitude}`;
     console.log(`Latitude: ${latitude}, Longitude: ${longitude}, Accuracy: ${accuracy}`);
-    
+    document.getElementById('infollac').innerHTML = `Latitude: ${latitude}, Longitude: ${longitude}, Accuracy: ${accuracy}`;
+
     const inRange = isWithinRadius(latitude, longitude, accuracy);
-    console.log(`Within target range: ${inRange}`);
+    document.getElementById('inforange').innerHTML = `Within target range: ${inRange}`;
     
     alert(
         inRange
@@ -113,9 +116,10 @@ function isWithinRadius(userLat, userLng, accuracy) {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = earthRadius * c;
 
+    document.getElementById('infodis').innerHTML = `Distance: ${distance}`;
+
     return distance <= accuracy;
 }
-
 
 function getLocation(desiredAccuracy) {
     if (desiredAccuracy && typeof desiredAccuracy === "number") {
@@ -131,7 +135,8 @@ function getLocation(desiredAccuracy) {
 }
 
 function test() {
-    userLatLog.value = '';
+    //userLatLog.value = '';
     getLocation();
+    //userLatLog.value = '';
 }
 </script>
