@@ -1,140 +1,111 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"> </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.js"
+        integrity="sha512-+k1pnlgt4F1H8L7t3z95o3/KO+o78INEcXTbnoJQ/F2VqDVhWoaiVml/OEHv9HsVgxUaVW+IbiZPUJQfF/YxZw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <title>verify Page</title>
     <style>
-    
-        span {
-            margin-bottom: 5px;
-            color: #333;
-        }
 
-        input {
-            width: 80%; 
-            padding: 4px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            margin-bottom: 14px0px;
-        }
-
-        button {
-            padding: 4px;
-            background-color: #4CAF50;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
     </style>
-    <title>Geolocation</title>
 </head>
+
 <body>
-    V1
-    <div class="form-container">
-        <div class="form-group">
-            <span>TCAP Office</span>
-            <input type="text" id="targetLatLon" name="lname" />
+    <div class="container">
+        <div class="banner">
+            <img src="" alt="">
         </div>
-        <div class="form-group">
-            <span>Current Location</span>
-            <input readonly type="text" id="userLatLog" name="lname" />
-            <button type="button" onclick="test()">Submit</button>
+        <div class="content">
+            <p>ยินดีด้วย! </p>
+            <div class="valid_location">
+                <P>1. ยืนยันการเข้าทดลองขับรถ</P>
+                <div class="row">
+                    <img src="" alt="">
+                    <div>
+                        <p>ยืนยันการเข้าทดลองขับรถ</p>
+                        <button type="button" class="btn btn-primary" id="btn_get_location"
+                            onclick=" getLocation()">กดยืนยัน</button>
+                        <p id="demo"></p>
+                    </div>
+                </div>
+            </div>
+            <div></div>
+            <div></div>
         </div>
+        <div></div>
     </div>
-    <div class="form-group">
-        <label id="infollac"></label> <br/>
-    </div>
-    <div class="form-group">
-        <label id="inforange"></label><br/>
-    </div>
-    <div class="form-group">
-        <label id="infodis"></label><br/>
-    </div>
-    <div id="map"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
 </body>
-</html>
+
 
 <script>
+    const x = document.getElementById("demo");
 
-console.log(navigator.userAgent);
-
-// Target location coordinates
-const targetLat = 13.743462465422091;
-const targetLng = 100.54782095085046;
-
-targetLatLon.value = `${targetLat} ${targetLng}`;
-
-const earthRadius = 6371000;
-
-
-const options = {
-    enableHighAccuracy: true,
-    timeout: 5000,
-    maximumAge: 10000,
-};
-
-function success(position) {
-    const { latitude, longitude, accuracy } = position.coords;
-    map.innerHTML = `<iframe width="1200" height="900" src="https://maps.google.com/maps?q=${latitude},${longitude}&amp;z=15&amp;output=embed"></iframe>`;
-    userLatLog.value = `${latitude} ${longitude}`;
-    console.log(`Latitude: ${latitude}, Longitude: ${longitude}, Accuracy: ${accuracy}`);
-    document.getElementById('infollac').innerHTML = `Latitude: ${latitude}, Longitude: ${longitude}, Accuracy: ${accuracy}`;
-
-    const inRange = isWithinRadius(latitude, longitude, accuracy);
-    document.getElementById('inforange').innerHTML = `Within target range: ${inRange}`;
-    
-    alert(
-        inRange
-            ? "Yes!, Your location is within the target radius."
-            : "No!, your location is not within the target radius."
-    );
-}
-
-function error(err) {
-    console.error(`Error getting location: ${err.message}`);
-}
-
-function isWithinRadius(userLat, userLng, accuracy) {
-    const userLatRad = (Math.PI * userLat) / 180;
-    const userLngRad = (Math.PI * userLng) / 180;
-
-    const deltaLat = userLatRad - (Math.PI * targetLat) / 180;
-    const deltaLng = userLngRad - (Math.PI * targetLng) / 180;
-
-    const a =
-        Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-        Math.cos((Math.PI * targetLat) / 180) * Math.cos(userLatRad) *
-        Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2);
-
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = earthRadius * c;
-
-    document.getElementById('infodis').innerHTML = `Distance: ${distance}`;
-
-    return distance <= accuracy;
-}
-
-function getLocation(desiredAccuracy) {
-    if (desiredAccuracy && typeof desiredAccuracy === "number") {
-        options.maximumAge = 0;
-        options.desiredAccuracy = desiredAccuracy;
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(GetPosition);
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
     }
 
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(success, error, options);
-    } else {
-        console.error("Geolocation is not supported by this browser.");
+    function calcDistance(p1, p2) {
+        return (google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 1000).toFixed(2);
     }
-}
 
-function test() {
-    getLocation();
-}
+    function GetPosition(position) {
+        x.innerHTML = "Latitude: " + position.coords.latitude +
+            "<br>Longitude: " + position.coords.longitude;
+        const lat1 = position.coords.latitude
+        const lon1 = position.coords.longitude
+        const lat2 = 13.7271708
+        const lon2 = 100.5415611
+        const unit = "K"
+        // distance(lat1, lon1, lat2, lon2, unit)
+        var p1 = new google.maps.LatLng(lat1, lon1);
+        var p2 = new google.maps.LatLng(lat2, lon2);
+        var distance = calcDistance(p1, p2) * 1000;
+        console.log(distance)
+        // const userPosition = {
+        //     lat: position.coords.latitude,
+        //     long: position.coords.longitude
+        // }
+    }
+
+    // lat1 = this.userPosition.lat
+    // lon1 = userPosition.long
+    // const lat2 = 12.787188563946689
+    // const lon2 = 101.6587929626953
+
+    function distance(lat1, lon1, lat2, lon2, unit) {
+        var radlat1 = Math.PI * lat1 / 180
+        var radlat2 = Math.PI * lat2 / 180
+        var theta = lon1 - lon2
+        var radtheta = Math.PI * theta / 180
+        var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+        if (dist > 1) {
+            dist = 1;
+        }
+        dist = Math.acos(dist)
+        dist = dist * 180 / Math.PI
+        dist = dist * 60 * 1.1515
+        console.log(dist)
+        if (unit == "K") { dist = dist * 1.609344 }
+        if (unit == "N") { dist = dist * 0.8684 }
+        x.innerHTML = `result : ${dist} K.`
+        return dist
+    }
+    // if (distance(lat1, lon1, lat2, lon2, unit) <= 0.1) {
+
+    // }
 </script>
+
+</html>
