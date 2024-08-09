@@ -3,129 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocation and Google Maps Example</title>
     <style>
-    
-        span {
-            margin-bottom: 5px;
-            color: #333;
+        #map {
+            height: 60vh; /* Adjust height to leave space for controls */
+            width: 100%;  /* Full width of the viewport */
         }
-
-        input {
-            width: 60%; 
-            padding: 4px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            margin-bottom: 14px0px;
+        #controls {
+            padding: 10px;
         }
-
-        button {
-            padding: 4px;
-            background-color: #4CAF50;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-13.81562 100.483553
-        button:hover {
-            background-color: #45a049;
+        #controls input {
+            margin-right: 10px;
         }
     </style>
-    <title>Geolocation</title>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LeOziAqAAAAACYHf3fIIKw3Xi-DPfN-5TqCtBo7"></script>
 </head>
 <body>
-    <div class="form-container">
-        <div class="form-group">
-            <span>Target Location</span>
-            <input type="text" id="targetLatLon" name="lname" />
-        </div>
-        <div class="form-group">
-            <span>User Location</span>
-            <input type="text" id="userLatLog" name="lname" />
-        </div>
+    <h1>Geolocation and Google Maps Example</h1>
+    <div id="controls">
+        <label for="target-lat">Target Latitude:</label>
+        <input type="text" id="target-lat" placeholder="e.g., 37.7749">
+        <label for="target-lng">Target Longitude:</label>
+        <input type="text" id="target-lng" placeholder="e.g., -122.4194">
+        <button id="calc-button">Calculate Distance</button>
     </div>
     <div id="map"></div>
+    <div id="distance"></div> <!-- This is where the distance will be displayed -->
+
+    <script>
+        var userLocation;
+
+        function initMap() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        var lat = position.coords.latitude;
+                        var lng = position.coords.longitude;
+
+                        userLocation = { lat: lat, lng: lng };
+
+                        var map = new google.maps.Map(document.getElementById('map'), {
+                            zoom: 15,
+                            center: userLocation
+                        });
+
+                        var marker = new google.maps.Marker({
+                            position: userLocation,
+                            map: map,
+                            title: 'You are here!'
+                        });
+                    },
+                    function() {
+                        handleLocationError(true);
+                    }
+                );
+            } else {
+                handleLocationError(false);
+            }
+        }
+
+        function handleLocationError(browserHasGeolocation) {
+            var errorMsg = browserHasGeolocation ?
+                'Error: The Geolocation service failed.' :
+                'Error: Your browser doesn\'t support geolocation.';
+            alert(errorMsg);
+        }
+
+        document.getElementById('calc-button').addEventListener('click', function() {
+            grecaptcha.ready(function() {
+                grecaptcha.execute();
+            });
+        });
+
+        function calculateDistance() {
+            if (!userLocation) {
+                alert('Your location is not available.');
+                return;
+            }
+
+            var targetLat = parseFloat(document.getElementById('target-lat').value);
+            var targetLng = parseFloat(document.getElementById('target-lng').value);
+
+            if (isNaN(targetLat) || isNaN(targetLng)) {
+                alert('Please enter valid coordinates.');
+                return;
+            }
+
+            var targetLocation = { lat: targetLat, lng: targetLng };
+            var distance = getDistanceInKm(userLocation, targetLocation);
+
+            document.getElementById('distance').innerText = `Distance to target: ${distance.toFixed(2)} km`;
+        }
+
+        function getDistanceInKm(coord1, coord2) {
+            var R = 6371; // Radius of the Earth in kilometers
+            var dLat = toRad(coord2.lat - coord1.lat);
+            var dLng = toRad(coord2.lng - coord1.lng);
+            var a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(toRad(coord1.lat)) * Math.cos(toRad(coord2.lat)) *
+                Math.sin(dLng / 2) * Math.sin(dLng / 2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        function toRad(degrees) {
+            return degrees * (Math.PI / 180);
+        }
+
+        function onSubmit(e) {
+            e.preventDefault(); // Prevent form submission
+            calculateDistance();
+        }
+
+        document.getElementById('calc-button').addEventListener('click', function() {
+            grecaptcha.ready(function() {
+                grecaptcha.execute();
+            });
+        });
+
+        window.onReCaptchaSuccess = function(token) {
+            calculateDistance();
+        };
+
+        window.onReCaptchaError = function() {
+            alert('reCAPTCHA verification failed.');
+        };
+    </script>
+
+    <!-- Load the Google Maps API script -->
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDno8K8VPqT99AeZpETvvNwmZh6hRZ5Yr8&callback=initMap">
+    </script>
 </body>
 </html>
-
-<script>
-
-console.log(navigator.userAgent);
-
-// Check if the browser is Microsoft Edge
-//if (!navigator.userAgent.includes("Edge" || "Edg")) {
-//    alert("For better accuracy, please use Microsoft Edge browser for location services.");
-//}
-
-// Target location coordinates
-const targetLat = 13.816206;
-const targetLng = 100.483942;
-
-targetLatLon.value = `${targetLat} ${targetLng}`;
-
-const earthRadius = 6371000;
-
-const options = {
-    enableHighAccuracy: true,
-    timeout: 5000,
-    maximumAge: 10000,
-};
-
-function success(position) {
-    const { latitude, longitude, accuracy } = position.coords;
-    map.innerHTML = `<iframe width="1200" height="900" src="https://maps.google.com/maps?q=${latitude},${longitude}&amp;z=15&amp;output=embed"></iframe>`;
-    userLatLog.value = `${latitude} ${longitude}`;
-    console.log(`Latitude: ${latitude}, Longitude: ${longitude}, Accuracy: ${accuracy}`);
-    
-    const inRange = isWithinRadius(latitude, longitude, accuracy);
-    console.log(`Within target range: ${inRange}`);
-    
-    alert(
-        inRange
-            ? "Congratulations! Your location is within the target radius."
-            : "Unfortunately, your location is not within the target radius."
-    );
-}
-
-function error(err) {
-    console.error(`Error getting location: ${err.message}`);
-}
-
-function isWithinRadius(userLat, userLng, accuracy) {
-    const userLatRad = (Math.PI * userLat) / 180;
-    const userLngRad = (Math.PI * userLng) / 180;
-
-    const deltaLat = userLatRad - (Math.PI * targetLat) / 180;
-    const deltaLng = userLngRad - (Math.PI * targetLng) / 180;
-
-    const a =
-        Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-        Math.cos((Math.PI * targetLat) / 180) * Math.cos(userLatRad) *
-        Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2);
-
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = earthRadius * c;
-
-    return distance <= accuracy;
-}
-
-function getLocation(desiredAccuracy) {
-    if (desiredAccuracy && typeof desiredAccuracy === "number") {
-        options.maximumAge = 0;
-        options.desiredAccuracy = desiredAccuracy;
-    }
-
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(success, error, options);
-    } else {
-        console.error("Geolocation is not supported by this browser.");
-    }
-}
-
-function test() {
-	userLatLog.value = '';
-    getLocation();
-}
-
-</script>
