@@ -6,33 +6,47 @@
     <title>Geolocation and Google Maps Example</title>
     <style>
         #map {
-            height: 100vh; /* Full height of the viewport */
-            width: 100%;   /* Full width of the viewport */
+            height: 60vh; /* Adjust height to leave space for controls */
+            width: 100%;  /* Full width of the viewport */
+        }
+        #controls {
+            padding: 10px;
+        }
+        #controls input {
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
     <h1>Geolocation and Google Maps Example</h1>
-    <div id="map"></div>
+    <div id="controls">
+        <label for="target-lat">Target Latitude:</label>
+        <input type="text" id="target-lat" value = "13.901740249020051">
+        <label for="target-lng">Target Longitude:</label>
+        <input type="text" id="target-lng" value = "100.53136145406356">
+        <button onclick="calculateDistance()">Calculate Distance</button>
+        <div>Distance to The Tara Park</div><div id="distance"> </div> <!-- This is where the distance will be displayed -->
 
+    </div>
+    <div id="map"></div>
+    
     <script>
+        var userLocation;
+
         function initMap() {
-            // Try HTML5 geolocation.
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     function(position) {
                         var lat = position.coords.latitude;
                         var lng = position.coords.longitude;
 
-                        var userLocation = { lat: lat, lng: lng };
+                        userLocation = { lat: lat, lng: lng };
 
-                        // Initialize the map.
                         var map = new google.maps.Map(document.getElementById('map'), {
                             zoom: 15,
                             center: userLocation
                         });
 
-                        // Add a marker to the map.
                         var marker = new google.maps.Marker({
                             position: userLocation,
                             map: map,
@@ -44,7 +58,6 @@
                     }
                 );
             } else {
-                // Browser doesn't support Geolocation
                 handleLocationError(false);
             }
         }
@@ -54,6 +67,42 @@
                 'Error: The Geolocation service failed.' :
                 'Error: Your browser doesn\'t support geolocation.';
             alert(errorMsg);
+        }
+
+        function calculateDistance() {
+            if (!userLocation) {
+                alert('Your location is not available.');
+                return;
+            }
+
+            var targetLat = parseFloat(document.getElementById('target-lat').value);
+            var targetLng = parseFloat(document.getElementById('target-lng').value);
+
+            if (isNaN(targetLat) || isNaN(targetLng)) {
+                alert('Please enter valid coordinates.');
+                return;
+            }
+
+            var targetLocation = { lat: targetLat, lng: targetLng };
+            var distance = getDistanceInKm(userLocation, targetLocation);
+
+            document.getElementById('distance').innerText = `Distance to target: ${distance.toFixed(2)} km`;
+        }
+
+        function getDistanceInKm(coord1, coord2) {
+            var R = 6371; // Radius of the Earth in kilometers
+            var dLat = toRad(coord2.lat - coord1.lat);
+            var dLng = toRad(coord2.lng - coord1.lng);
+            var a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(toRad(coord1.lat)) * Math.cos(toRad(coord2.lat)) *
+                Math.sin(dLng / 2) * Math.sin(dLng / 2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        function toRad(degrees) {
+            return degrees * (Math.PI / 180);
         }
     </script>
 
