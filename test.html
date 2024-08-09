@@ -1,50 +1,65 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocation and Google Maps Example</title>
     <style>
-    
-        span {
-            margin-bottom: 5px;
-            color: #333;
-        }
-
-        input {
-            width: 40%; 
-            padding: 4px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            margin-bottom: 14px0px;
-        }
-
-        button {
-            padding: 4px;
-            background-color: #4CAF50;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #45a049;
+        #map {
+            height: 100vh; /* Full height of the viewport */
+            width: 100%;   /* Full width of the viewport */
         }
     </style>
-    <title>Geolocation</title>
 </head>
 <body>
-    <label id="lbltipAddedComment"></label>
-    <button type="button" onclick="test()">Submit</button>
+    <h1>Geolocation and Google Maps Example</h1>
+    <div id="map"></div>
+
+    <script>
+        function initMap() {
+            // Try HTML5 geolocation.
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        var lat = position.coords.latitude;
+                        var lng = position.coords.longitude;
+
+                        var userLocation = { lat: lat, lng: lng };
+
+                        // Initialize the map.
+                        var map = new google.maps.Map(document.getElementById('map'), {
+                            zoom: 15,
+                            center: userLocation
+                        });
+
+                        // Add a marker to the map.
+                        var marker = new google.maps.Marker({
+                            position: userLocation,
+                            map: map,
+                            title: 'You are here!'
+                        });
+                    },
+                    function() {
+                        handleLocationError(true);
+                    }
+                );
+            } else {
+                // Browser doesn't support Geolocation
+                handleLocationError(false);
+            }
+        }
+
+        function handleLocationError(browserHasGeolocation) {
+            var errorMsg = browserHasGeolocation ?
+                'Error: The Geolocation service failed.' :
+                'Error: Your browser doesn\'t support geolocation.';
+            alert(errorMsg);
+        }
+    </script>
+
+    <!-- Load the Google Maps API script -->
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDno8K8VPqT99AeZpETvvNwmZh6hRZ5Yr8&callback=initMap">
+    </script>
 </body>
 </html>
-
-<script>
-function test() {
-    //alert('test');
-    
-    document.getElementById('lbltipAddedComment').innerHTML = 'Your tip has been submitted!';
-}
-</script>
